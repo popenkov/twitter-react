@@ -3,13 +3,15 @@ import PostListItem from "../post-list-item/";
 import { ListGroup} from 'reactstrap';
 import './post-list.css';
 
-const PostList = ({posts}) => {
+const PostList = ({posts, onDelete}) => {
+
     const elements = posts.map((item) => { // перебираем массив, трансформируем и возвращаем новый массив с версткой.
+        const {id, ...itemProps} = item; // деконструируем массив и записываем в переменную отдельно ИД и отдельно остальные параметры.
         return (
-            <li className="list-group-item">
+            <li key={id} className="list-group-item">
                 <PostListItem 
-                label={item.label} 
-                important={item.important}/>
+                {...itemProps}
+                onDelete={()=>onDelete(id)}/> 
             </li>
 
         )
