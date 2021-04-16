@@ -2,35 +2,13 @@ import React, {Component} from 'react';
 import './post-list-item.scss';
 
 export default class PostListItem extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            important: false,
-            like: false
-        };
-        this.onImportant = this.onImportant.bind(this); // привязываем для метода контекст
-        this.onLike = this.onLike.bind(this);
-    }
-
-    onImportant() {
-        this.setState(({important}) => ({ //деструктурируем объект и записываем в important значение state.important
-            important: !important // чтобы тру становилось фолс и наоборот
-        })) 
-    }
-
-    onLike() {
-        this.setState(({like}) => ({ 
-            like: !like 
-        })) 
-    }
+      
 
 
 
     render () { // возвращает верстку
-        const {label, onDelete} = this.props; // так получаем свойства из переданного в PostListItem пропса
+        const {label, onDelete, onToggleImportant, onToggleLiked, important, like} = this.props; // так получаем свойства из переданного в PostListItem пропса
 
-        //до этого мы получаем important из пропса, а нам надо из стэйта
-        const {important, like} = this.state;
 
         let classnames = "app-list-item d-flex justify-content-between";
         if (important) {
@@ -43,11 +21,11 @@ export default class PostListItem extends Component {
 
         return ( // он всегда что-то возвращает (верстку)
                 <div className={classnames}>
-                <span className="app-list-item-label" onClick={this.onLike}>
+                <span className="app-list-item-label" onClick={onToggleLiked}>
                     {label}
                 </span>
                 <div className="d-flex justify-content-center align-items-center">
-                    <button type="button" classList="btn-star btn-sm" onClick={this.onImportant}>
+                    <button type="button" classList="btn-star btn-sm" onClick={onToggleImportant}>
                         <i className="fa fa-star"></i>
                     </button>
 
