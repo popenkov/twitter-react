@@ -25,13 +25,15 @@ export default class App extends Component {
                 {label: 'Going to learn React', important: true, like: false, id: 1},
                 {label: 'That is so good', important: false, like: false, id: 2},
                 {label: 'I need a brake', important: false, like: false, id: 3}
-            ]
+            ],
+            term: ''
         };
 
         this.deleteItem = this.deleteItem.bind(this);
         this.addItem = this.addItem.bind(this);
         this.onToggleImportant = this.onToggleImportant.bind(this);
         this.onToggleLiked = this.onToggleLiked.bind(this);
+        this.onUpdateSearch = this.onUpdateSearch.bind(this);
  
         this.maxId = 4; //начиная с этого ИД я буду генерировать новые посты. id: this.maxId++
     }
@@ -107,11 +109,31 @@ export default class App extends Component {
 
     }
 
+    //Алгоритм:
+    //через эту функцию прогнать все данные, которые находятся в стэйте.
+    // и при помощи шаблона term отыскать совпадения.
+    searchPost(items, term) {
+        if(term.length === 0) {
+            return items;
+        }
+
+        return items.filter((item) => {
+            return item.label.indexOf(term) > -1; //вернет все посты, где найдена подстрока
+        }) //так функция вернет массив с постами.
+    }
+
+    onUpdateSearch(term) {
+        this.setState({term}); // вместо записи term: term
+    }
+
 
     render() {
-        const liked = this.state.data.filter(elem => elem.like === true).length;
-        const allPosts = this.state.data.length;
+        const {data, term} = this.state;
 
+        const liked = data.filter(elem => elem.like === true).length;
+        const allPosts = data.length;
+
+        const visiblePosts = this.searchPost(data, term);
 
 
         return (
@@ -120,11 +142,12 @@ export default class App extends Component {
                     liked={liked}
                     allPosts={allPosts}/>
                 <div className="search-panel d-flex">
-                    <SearchPanel/>
+                    <SearchPanel
+                        onUpdateSearch={this.onUpdateSearch}/>
                     <PostStatusFilter/>
                 </div>
                 <PostList 
-                    posts={this.state.data}
+                    posts={visiblePosts}
                     onDelete={this.deleteItem}
                     onToggleImportant={this.onToggleImportant} // функция отвечает за стэйт импортант, который будет в каждом компоненте
                     onToggleLiked={this.onToggleLiked}/> {/* // функция отвечает за стэйт лайк, который будет в каждом компоненте */}
